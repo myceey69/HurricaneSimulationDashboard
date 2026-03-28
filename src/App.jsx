@@ -3,6 +3,8 @@ import LeftPanel from './components/LeftPanel';
 import RightPanel from './components/RightPanel';
 import BottomTimeline from './components/BottomTimeline';
 import MapArea from './components/MapArea';
+import JarvisCore from './components/JarvisCore';
+import MissionAmbienceController from './components/MissionAmbienceController';
 import { MOCK_ROBOTS, MOCK_TELEMETRY } from './data/mockData';
 
 export default function App() {
@@ -11,12 +13,18 @@ export default function App() {
     plannedRoute: true,
     hazards: true,
     floodZones: true,
-    targets: true
+    targets: true,
+    resources: true
   });
+
+  // AEGIS State
+  const [isPooling, setIsPooling] = useState(false);
+  const [gapAnalysis, setGapAnalysis] = useState(null);
+  const [generatedImage, setGeneratedImage] = useState(null);
 
   // Replay State
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0); // index in MOCK_TELEMETRY
+  const [progress, setProgress] = useState(0); 
   const [playbackScale, setPlaybackScale] = useState(1);
   const totalSteps = MOCK_TELEMETRY.length;
 
@@ -24,16 +32,76 @@ export default function App() {
     let interval;
     if (isPlaying && progress < totalSteps - 1) {
       interval = setInterval(() => {
-        setProgress(p => (p + 1 < totalSteps ? p + 1 : p));
+        setProgress(p => {
+          if (p + 1 < totalSteps) {
+            return p + 1;
+          } else {
+            setIsPlaying(false);
+            return p;
+          }
+        });
       }, 1000 / playbackScale);
-    } else if (progress >= totalSteps - 1) {
-      setIsPlaying(false);
-    }
+    } 
     return () => clearInterval(interval);
   }, [isPlaying, progress, playbackScale, totalSteps]);
 
-  const toggleLayer = (layerName) => {
-    setLayers(prev => ({ flex: prev, ...prev, [layerName]: !prev[layerName] }));
+  const toggleLayer = (layerName, forceValue) => {
+    setLayers(prev => ({ 
+      ...prev, 
+      [layerName]: forceValue !== undefined ? forceValue : !prev[layerName] 
+    }));
+  };
+
+  // Jarvis command handlers
+  const handleJarvisLayerToggle = (layerName, show) => {
+    toggleLayer(layerName, show);
+  };
+
+  const handleJarvisRobotSelect = (robotId) => {
+    setActiveRobot(robotId);
+  };
+
+  const handleJarvisPlaybackControl = (action) => {
+    switch (action) {
+      case 'play':
+        setIsPlaying(true);
+        break;
+      case 'pause':
+        setIsPlaying(false);
+        break;
+      case 'restart':
+        setProgress(0);
+        setIsPlaying(false);
+        break;
+      case 'speedUp':
+        setPlaybackScale(prev => Math.min(prev * 2, 8));
+        break;
+      case 'slowDown':
+        setPlaybackScale(prev => Math.max(prev / 2, 0.25));
+        break;
+    }
+  };
+
+  const handleJarvisGapAnalysis = () => {
+    // Trigger gap analysis from LeftPanel
+    setIsPooling(false);
+    // This would normally trigger the gap analysis flow
+    console.log('Gap analysis triggered via Jarvis');
+  };
+
+  const handleJarvisResourcePool = () => {
+    setIsPooling(true);
+  };
+
+  const handleJarvisStatusReport = () => {
+    // Return current status for voice report
+    return {
+      activeRobots: MOCK_ROBOTS.filter(r => r.status === 'active').length,
+      totalRobots: MOCK_ROBOTS.length,
+      progress: progress,
+      totalSteps: totalSteps,
+      isPlaying: isPlaying
+    };
   };
 
   const activeRobotData = MOCK_ROBOTS.find(r => r.id === activeRobot);
@@ -55,6 +123,12 @@ export default function App() {
         robots={MOCK_ROBOTS}
         layers={layers}
         toggleLayer={toggleLayer}
+        isPooling={isPooling}
+        setIsPooling={setIsPooling}
+        setGapAnalysis={setGapAnalysis}
+        gapAnalysis={gapAnalysis}
+        generatedImage={generatedImage}
+        setGeneratedImage={setGeneratedImage}
       />
       
       <MapArea 
@@ -68,6 +142,7 @@ export default function App() {
       <RightPanel 
         activeTelemetry={activeTelemetry}
         robot={activeRobotData}
+        gapAnalysis={gapAnalysis}
       />
 
       <BottomTimeline 
@@ -79,6 +154,37 @@ export default function App() {
         setProgress={setProgress}
         totalSteps={totalSteps}
         currentTime={currentTime}
+      />
+
+      <JarvisCore
+        onLayerToggle={handleJarvisLayerToggle}
+        onRobotSelect={handleJarvisRobotSelect}
+        onPlaybackControl={handleJarvisPlaybackControl}
+        onGapAnalysis={handleJarvisGapAnalysis}
+        onResourcePool={handleJarvisResourcePool}
+        onStatusReport={handleJarvisStatusReport}
+        robots={MOCK_ROBOTS}
+        currentStatus={{
+          activeRobots: MOCK_ROBOTS.filter(r => r.status === 'active').length,
+          totalRobots: MOCK_ROBOTS.length,
+          progress: progress,
+          totalSteps: totalSteps,
+          isPlaying: isPlaying,
+          currentRobot: activeRobotData
+        }}
+      />
+
+      <MissionAmbienceController
+        missionState={{
+          isPlaying: isPlaying,
+          progress: progress,
+          totalSteps: totalSteps,
+          activeTelemetry: activeTelemetry,
+          activeRobot: activeRobotData,
+          criticalAlerts: activeTelemetry?.systemHealth < 50 ? 1 : 0,
+          missionComplete: progress >= totalSteps - 1 && !isPlaying
+        }}
+        enabled={import.meta.env.VITE_ENABLE_LYRIA === 'true'}
       />
     </div>
   );

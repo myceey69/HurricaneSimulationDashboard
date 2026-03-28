@@ -289,3 +289,22 @@ input[type=range]::-webkit-slider-runnable-track {
   color: white;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }
+
+/* Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Error styling */
+.error-red {
+  --error-red: #ef4444;
+}

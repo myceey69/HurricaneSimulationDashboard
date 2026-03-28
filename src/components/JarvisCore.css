@@ -1,0 +1,211 @@
+.jarvis-core {
+  position: fixed;
+  bottom: 120px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.jarvis-indicator {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jarvis-arc {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.jarvis-arc.listening {
+  color: #3b82f6;
+  animation: pulse-arc 2s ease-in-out infinite;
+}
+
+.jarvis-arc.processing {
+  color: #f59e0b;
+  animation: rotate-arc 1s linear infinite;
+}
+
+.arc-circle {
+  transition: stroke-dashoffset 0.5s ease;
+  transform-origin: center;
+}
+
+.jarvis-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.jarvis-arc.listening .jarvis-icon {
+  border-color: #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.jarvis-arc.processing .jarvis-icon {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+}
+
+.jarvis-controls {
+  display: flex;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.jarvis-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.jarvis-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.jarvis-btn.active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.jarvis-btn.active:hover {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+.jarvis-transcript {
+  background: rgba(15, 23, 42, 0.95);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  max-width: 300px;
+  backdrop-filter: blur(10px);
+  animation: slide-in-right 0.3s ease;
+}
+
+.transcript-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #3b82f6;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.transcript-text {
+  font-size: 13px;
+  color: #e2e8f0;
+  line-height: 1.4;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.jarvis-warning {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  max-width: 250px;
+  text-align: right;
+  animation: slide-in-right 0.3s ease;
+}
+
+@keyframes pulse-arc {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes rotate-arc {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(59, 130, 246, 0.9), 0 0 80px rgba(59, 130, 246, 0.4);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .jarvis-core {
+    bottom: 100px;
+    right: 10px;
+  }
+
+  .jarvis-indicator {
+    width: 64px;
+    height: 64px;
+  }
+
+  .jarvis-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .jarvis-transcript {
+    max-width: 200px;
+    font-size: 11px;
+  }
+}
