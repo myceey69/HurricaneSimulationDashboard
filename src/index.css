@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('leaflet/dist/leaflet.css');
+
+:root {
+  --bg-dark: #0b0d17;
+  --bg-panel: rgba(15, 17, 26, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-orange: #f59e0b;
+  --accent-red: #ef4444;
+
+  --font-main: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr 340px;
+  grid-template-rows: 1fr 80px;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* Glassmorphism Panels */
+.panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.left-panel {
+  grid-column: 1;
+  grid-row: 1;
+  border-right: 1px solid var(--border-color);
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
+}
+
+.right-panel {
+  grid-column: 3;
+  grid-row: 1;
+  border-left: 1px solid var(--border-color);
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+}
+
+.bottom-timeline {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 2rem;
+  z-index: 1000;
+}
+
+.map-area {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 0;
+}
+
+/* Map specific overrides */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #111424 !important; /* Dark behind-map color */
+}
+
+/* Optional: Dark mode filter for base OSM tiles */
+.dark-map-tiles {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* Custom UI Components */
+h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+}
+.section-label:first-of-type {
+  margin-top: 0;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.status-row:last-child {
+  margin-bottom: 0;
+}
+.status-value {
+  font-weight: 500;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+/* Buttons */
+.btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Badge variants */
+.badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.badge-active { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+.badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); }
+.badge-offline { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+
+/* Timeline specific */
+.timeline-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.timeline-slider-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.time-readout {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  cursor: pointer;
+  margin-top: -6px;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  border: 2px solid white;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* Custom Marker Styling */
+.robot-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #0f111a;
+  border: 2px solid var(--accent-blue);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  color: white;
+}
+.robot-marker.warning {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+.hazard-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
