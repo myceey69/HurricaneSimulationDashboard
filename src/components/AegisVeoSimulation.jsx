@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Play, Loader2, Download, AlertTriangle, Video } from 'lucide-react';
+import { Play, Loader2, Download, Video } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-export default function AegisVeoSimulation({ gapAnalysis }) {
+export default function AegisVeoSimulation({ gapAnalysis, generatedImage }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [error, setError] = useState(null);
@@ -23,12 +23,12 @@ export default function AegisVeoSimulation({ gapAnalysis }) {
       const apiKey = import.meta.env.VITE_GOOGLE_GENAI_API_KEY;
       const ai = new GoogleGenAI({ apiKey });
 
-      const robotName = gapAnalysis?.recommendation || "'Mud-Runner' hexapod";
-      const terrain = gapAnalysis ? "through deep mud and urban debris" : "through rushing brown floodwater and urban debris";
+      const robotName = gapAnalysis?.recommendation || "specialized rescue robot";
+      const terrain = gapAnalysis ? "through complex disaster terrain" : "through floodwater and debris";
       
-      const prompt = `A 5-second cinematic deployment simulation of the ${robotName} robot navigating ${terrain}. The robot stabilizes itself using advanced sensors and reaches a rescue target. High-fidelity disaster simulation style.`;
+      const prompt = `A 5-second cinematic deployment simulation of the ${robotName} robot shown in the provided image. The robot is navigating ${terrain}, showcasing its specialized movement and stabilization in extreme conditions. High-fidelity disaster simulation style.`;
 
-      let operation = await ai.models.generateVideos({
+      const videoConfig = {
         model: 'veo-3.1-fast-generate-preview',
         prompt: prompt,
         config: {
@@ -36,7 +36,21 @@ export default function AegisVeoSimulation({ gapAnalysis }) {
           resolution: '1080p',
           aspectRatio: '16:9'
         }
-      });
+      };
+
+      // If we have a generated image from Nano, use it as the reference for I2V
+      if (generatedImage) {
+        setProgress("Linking Nano Design to Veo...");
+        const base64Data = generatedImage.split(',')[1];
+        videoConfig.image = {
+          inlineData: {
+            data: base64Data,
+            mimeType: "image/png"
+          }
+        };
+      }
+
+      let operation = await ai.models.generateVideos(videoConfig);
 
       setProgress("Dreaming up your robot... (2-3 minutes)");
 
@@ -52,7 +66,6 @@ export default function AegisVeoSimulation({ gapAnalysis }) {
       const videoUri = operation.response?.generatedVideos?.[0]?.video?.uri;
       if (!videoUri) throw new Error("No video URI received from Veo");
 
-      // Fetch the video file using the API key in the headers as seen in the reference
       const response = await fetch(videoUri, {
         method: 'GET',
         headers: { 'x-goog-api-key': apiKey },
@@ -90,7 +103,9 @@ export default function AegisVeoSimulation({ gapAnalysis }) {
         color: 'var(--text-secondary)', 
         marginBottom: '1rem' 
       }}>
-        Create high-fidelity deployment simulations of custom hardware in the predicted failure environment.
+        {generatedImage 
+          ? "Image-to-Video: Animating your specific AI design in the disaster zone." 
+          : "Text-to-Video: Generating a cinematic simulation based on mission data."}
       </p>
 
       {!videoUrl && (
@@ -123,7 +138,7 @@ export default function AegisVeoSimulation({ gapAnalysis }) {
           ) : (
             <>
               <Play size={16} />
-              Generate Simulation (The WOW)
+              {generatedImage ? "Animate Nano Design" : "Generate Simulation"}
             </>
           )}
         </button>

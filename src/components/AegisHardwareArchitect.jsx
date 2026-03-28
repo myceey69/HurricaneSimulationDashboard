@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Bot, Camera, Download, Loader2, Sparkles } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-export default function AegisHardwareArchitect({ gapAnalysis }) {
+export default function AegisHardwareArchitect({ gapAnalysis, generatedImage, setGeneratedImage }) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState(null);
 
   const generateAegisBotImage = async () => {
@@ -51,7 +50,7 @@ export default function AegisHardwareArchitect({ gapAnalysis }) {
 
     const link = document.createElement('a');
     link.href = generatedImage;
-    link.download = 'aegis-mud-runner-design.png';
+    link.download = 'aegis-design.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -107,7 +106,7 @@ export default function AegisHardwareArchitect({ gapAnalysis }) {
         ) : (
           <>
             <Bot size={16} />
-            Generate 'Mud-Runner' Spec
+            Generate {gapAnalysis?.recommendation || "Robot"} Spec
           </>
         )}
       </button>

@@ -11,7 +11,10 @@ export default function LeftPanel({
   toggleLayer,
   isPooling,
   setIsPooling,
-  setGapAnalysis
+  setGapAnalysis,
+  gapAnalysis,
+  generatedImage,
+  setGeneratedImage
 }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -168,10 +171,17 @@ export default function LeftPanel({
       </div>
 
       <div className="section-label">Generative Genesis (Nano)</div>
-      <AegisHardwareArchitect gapAnalysis={gapAnalysis} />
+      <AegisHardwareArchitect 
+        gapAnalysis={gapAnalysis} 
+        generatedImage={generatedImage} 
+        setGeneratedImage={setGeneratedImage} 
+      />
 
       <div className="section-label">Veo Simulation (WOW)</div>
-      <AegisVeoSimulation gapAnalysis={gapAnalysis} />
+      <AegisVeoSimulation 
+        gapAnalysis={gapAnalysis} 
+        generatedImage={generatedImage} 
+      />
     </div>
   );
 }

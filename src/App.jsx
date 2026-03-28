@@ -18,6 +18,7 @@ export default function App() {
   // AEGIS State
   const [isPooling, setIsPooling] = useState(false);
   const [gapAnalysis, setGapAnalysis] = useState(null);
+  const [generatedImage, setGeneratedImage] = useState(null);
 
   // Replay State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,11 +30,16 @@ export default function App() {
     let interval;
     if (isPlaying && progress < totalSteps - 1) {
       interval = setInterval(() => {
-        setProgress(p => (p + 1 < totalSteps ? p + 1 : p));
+        setProgress(p => {
+          if (p + 1 < totalSteps) {
+            return p + 1;
+          } else {
+            setIsPlaying(false);
+            return p;
+          }
+        });
       }, 1000 / playbackScale);
-    } else if (progress >= totalSteps - 1) {
-      setIsPlaying(false);
-    }
+    } 
     return () => clearInterval(interval);
   }, [isPlaying, progress, playbackScale, totalSteps]);
 
@@ -63,6 +69,9 @@ export default function App() {
         isPooling={isPooling}
         setIsPooling={setIsPooling}
         setGapAnalysis={setGapAnalysis}
+        gapAnalysis={gapAnalysis}
+        generatedImage={generatedImage}
+        setGeneratedImage={setGeneratedImage}
       />
       
       <MapArea 
