@@ -1,19 +1,78 @@
-import React from 'react';
-import { Layers, Crosshair, Map, Filter, RadioReceiver } from 'lucide-react';
-import NanoBanana from './NanoBanana';
+import React, { useState } from 'react';
+import { Layers, Crosshair, Map, Filter, RadioReceiver, Database, Zap, AlertTriangle } from 'lucide-react';
+import AegisHardwareArchitect from './AegisHardwareArchitect';
+import AegisVeoSimulation from './AegisVeoSimulation';
 
 export default function LeftPanel({
   activeRobot,
   setActiveRobot,
   robots,
   layers,
-  toggleLayer
+  toggleLayer,
+  isPooling,
+  setIsPooling,
+  setGapAnalysis
 }) {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const poolResources = () => {
+    setIsPooling(true);
+    setTimeout(() => {
+      alert("Multimodal Resource Fusion Complete: USAR TF1, WHO Drone Team, and FEMA assets synced.");
+      setIsPooling(false);
+    }, 1500);
+  };
+
+  const identifyGap = () => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setGapAnalysis({
+        status: "Veto",
+        reason: "98% Soil Saturation detected in Sector 7. Existing wheeled robots (RBT-Bravo) will fail.",
+        recommendation: "Deploy Custom 'Mud-Runner' Hexapod with wide-traction gimbals.",
+        specs: {
+          chassis: "Sealed IP68 Elevated",
+          locomotion: "Variable-Gait Hexapod",
+          payload: "40lbs Water/Med-kit"
+        }
+      });
+      setIsAnalyzing(false);
+    }, 2000);
+  };
+
   return (
     <div className="panel left-panel">
-      <h2><RadioReceiver size={24} color="var(--accent-blue)" /> Mission Control</h2>
+      <h2><Zap size={24} color="var(--accent-blue)" /> AEGIS Ops</h2>
       
-      <div className="section-label">Select Unit</div>
+      <div className="section-label">Mission Intelligence</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1rem' }}>
+        <button 
+          className="btn btn-primary" 
+          onClick={poolResources}
+          disabled={isPooling}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.75rem' }}
+        >
+          <Database size={14} /> {isPooling ? "Pooling..." : "Pool Resources"}
+        </button>
+        <button 
+          className="btn" 
+          onClick={identifyGap}
+          disabled={isAnalyzing}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '0.5rem', 
+            fontSize: '0.75rem',
+            background: 'var(--accent-red)',
+            color: 'white'
+          }}
+        >
+          <AlertTriangle size={14} /> {isAnalyzing ? "Analyzing..." : "Identify Gap"}
+        </button>
+      </div>
+
+      <div className="section-label">Active Units</div>
       <div className="card" style={{ padding: '0.5rem' }}>
         {robots.map(r => (
           <div 
@@ -40,7 +99,7 @@ export default function LeftPanel({
         ))}
       </div>
 
-      <div className="section-label">Map Layers</div>
+      <div className="section-label">Strategic Layers</div>
       <div className="card">
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', cursor: 'pointer' }}>
           <input 
@@ -49,7 +108,7 @@ export default function LeftPanel({
             onChange={() => toggleLayer('plannedRoute')}
             style={{ accentColor: 'var(--accent-blue)' }}
           />
-          <Map size={18} /> Planned Route
+          <Map size={18} /> Tactical Routes
         </label>
         
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', cursor: 'pointer' }}>
@@ -59,7 +118,7 @@ export default function LeftPanel({
             onChange={() => toggleLayer('hazards')}
             style={{ accentColor: 'var(--accent-red)' }}
           />
-          <Filter size={18} /> Hazard Markers
+          <Filter size={18} /> Hazard Analysis
         </label>
         
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', cursor: 'pointer' }}>
@@ -69,7 +128,7 @@ export default function LeftPanel({
             onChange={() => toggleLayer('floodZones')}
             style={{ accentColor: 'var(--accent-blue)' }}
           />
-          <Layers size={18} /> Flood Zones
+          <Layers size={18} /> Terrain Saturation
         </label>
 
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
@@ -79,18 +138,15 @@ export default function LeftPanel({
             onChange={() => toggleLayer('targets')}
             style={{ accentColor: 'var(--accent-green)' }}
           />
-          <Crosshair size={18} /> Targets (Civilians/Supply)
+          <Crosshair size={18} /> Resource Gaps
         </label>
       </div>
 
-      <div className="section-label">AI Tools</div>
-      <NanoBanana />
+      <div className="section-label">Generative Genesis (Nano)</div>
+      <AegisHardwareArchitect />
 
-      <div style={{ marginTop: 'auto' }}>
-        <button className="btn btn-primary" onClick={() => alert("Mission start initialized")}>
-          Initiate Selected Mission
-        </button>
-      </div>
+      <div className="section-label">Veo Simulation (WOW)</div>
+      <AegisVeoSimulation />
     </div>
   );
 }

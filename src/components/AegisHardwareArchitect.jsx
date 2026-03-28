@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Banana, Camera, Download, Loader2 } from 'lucide-react';
+import { Bot, Camera, Download, Loader2, Sparkles } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-export default function NanoBanana() {
+export default function AegisHardwareArchitect() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState(null);
 
-  const generateNanoBananaImage = async () => {
+  const generateAegisBotImage = async () => {
     if (!import.meta.env.VITE_GOOGLE_GENAI_API_KEY) {
       setError("Google GenAI API key not configured");
       return;
@@ -21,7 +21,7 @@ export default function NanoBanana() {
         apiKey: import.meta.env.VITE_GOOGLE_GENAI_API_KEY
       });
 
-      const prompt = "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme";
+      const prompt = "A hyper-realistic hero image of a specialized disaster rescue robot called the 'Mud-Runner'. It is a hexapod with wide-traction gimbals, a sealed IP68 elevated chassis, and a heavy-duty payload module. It is navigating deep, thick brown mud and urban debris during a hurricane rescue mission. Dramatic lighting, 8k resolution, cinematic style.";
 
       const response = await ai.models.generateContent({
         model: "gemini-3.1-flash-image-preview",
@@ -36,7 +36,7 @@ export default function NanoBanana() {
         }
       }
     } catch (err) {
-      console.error("Error generating nano banana image:", err);
+      console.error("Error generating AEGIS bot image:", err);
       setError(`Failed to generate image: ${err.message}`);
     } finally {
       setIsGenerating(false);
@@ -48,7 +48,7 @@ export default function NanoBanana() {
 
     const link = document.createElement('a');
     link.href = generatedImage;
-    link.download = 'nano-banana-gemini.png';
+    link.download = 'aegis-mud-runner-design.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -61,10 +61,10 @@ export default function NanoBanana() {
         alignItems: 'center', 
         gap: '0.5rem',
         marginBottom: '1rem',
-        color: 'var(--accent-green)'
+        color: 'var(--accent-blue)'
       }}>
-        <Banana size={20} />
-        Nano Banana Generator
+        <Sparkles size={20} />
+        Generative Genesis
       </h3>
       
       <p style={{ 
@@ -72,16 +72,16 @@ export default function NanoBanana() {
         color: 'var(--text-secondary)', 
         marginBottom: '1rem' 
       }}>
-        Generate AI-powered images of nano banana dishes with a Gemini theme using Google's GenAI.
+        Procedurally design specialized robotic hardware matched to hyper-local terrain coefficients.
       </p>
 
       <button
-        onClick={generateNanoBananaImage}
+        onClick={generateAegisBotImage}
         disabled={isGenerating}
         style={{
           width: '100%',
           padding: '0.75rem',
-          backgroundColor: 'var(--accent-green)',
+          backgroundColor: 'var(--accent-blue)',
           color: 'white',
           border: 'none',
           borderRadius: '8px',
@@ -99,12 +99,12 @@ export default function NanoBanana() {
         {isGenerating ? (
           <>
             <Loader2 size={16} className="animate-spin" />
-            Generating...
+            Synthesizing Design...
           </>
         ) : (
           <>
-            <Camera size={16} />
-            Generate Nano Banana
+            <Bot size={16} />
+            Generate 'Mud-Runner' Spec
           </>
         )}
       </button>
@@ -127,7 +127,7 @@ export default function NanoBanana() {
         <div>
           <img
             src={generatedImage}
-            alt="Generated nano banana dish"
+            alt="Generated AEGIS bot design"
             style={{
               width: '100%',
               borderRadius: '8px',
@@ -139,9 +139,9 @@ export default function NanoBanana() {
             style={{
               width: '100%',
               padding: '0.5rem',
-              backgroundColor: 'var(--accent-blue)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
               color: 'white',
-              border: 'none',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '8px',
               cursor: 'pointer',
               display: 'flex',
@@ -152,7 +152,7 @@ export default function NanoBanana() {
             }}
           >
             <Download size={16} />
-            Download Image
+            Export Technical Brief
           </button>
         </div>
       )}

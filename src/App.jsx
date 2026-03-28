@@ -11,12 +11,17 @@ export default function App() {
     plannedRoute: true,
     hazards: true,
     floodZones: true,
-    targets: true
+    targets: true,
+    resources: true
   });
+
+  // AEGIS State
+  const [isPooling, setIsPooling] = useState(false);
+  const [gapAnalysis, setGapAnalysis] = useState(null);
 
   // Replay State
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0); // index in MOCK_TELEMETRY
+  const [progress, setProgress] = useState(0); 
   const [playbackScale, setPlaybackScale] = useState(1);
   const totalSteps = MOCK_TELEMETRY.length;
 
@@ -33,7 +38,7 @@ export default function App() {
   }, [isPlaying, progress, playbackScale, totalSteps]);
 
   const toggleLayer = (layerName) => {
-    setLayers(prev => ({ flex: prev, ...prev, [layerName]: !prev[layerName] }));
+    setLayers(prev => ({ ...prev, [layerName]: !prev[layerName] }));
   };
 
   const activeRobotData = MOCK_ROBOTS.find(r => r.id === activeRobot);
@@ -55,6 +60,9 @@ export default function App() {
         robots={MOCK_ROBOTS}
         layers={layers}
         toggleLayer={toggleLayer}
+        isPooling={isPooling}
+        setIsPooling={setIsPooling}
+        setGapAnalysis={setGapAnalysis}
       />
       
       <MapArea 
@@ -68,6 +76,7 @@ export default function App() {
       <RightPanel 
         activeTelemetry={activeTelemetry}
         robot={activeRobotData}
+        gapAnalysis={gapAnalysis}
       />
 
       <BottomTimeline 
