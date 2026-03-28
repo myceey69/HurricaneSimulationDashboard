@@ -43,10 +43,8 @@ export default function AegisVeoSimulation({ gapAnalysis, generatedImage }) {
         setProgress("Linking Nano Design to Veo...");
         const base64Data = generatedImage.split(',')[1];
         videoConfig.image = {
-          inlineData: {
-            data: base64Data,
-            mimeType: "image/png"
-          }
+          bytesBase64Encoded: base64Data,
+          mimeType: "image/png"
         };
       }
 
