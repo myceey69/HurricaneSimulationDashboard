@@ -26,16 +26,41 @@ export default function LeftPanel({
   const identifyGap = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
-      setGapAnalysis({
-        status: "Veto",
-        reason: "98% Soil Saturation detected in Sector 7. Existing wheeled robots (RBT-Bravo) will fail.",
-        recommendation: "Deploy Custom 'Mud-Runner' Hexapod with wide-traction gimbals.",
-        specs: {
-          chassis: "Sealed IP68 Elevated",
-          locomotion: "Variable-Gait Hexapod",
-          payload: "40lbs Water/Med-kit"
+      const scenarios = [
+        {
+          status: "Veto",
+          reason: "98% Soil Saturation detected in Sector 7. Existing wheeled robots (RBT-Bravo) will fail.",
+          recommendation: "Mud-Runner Hexapod",
+          specs: {
+            chassis: "Sealed IP68 Elevated",
+            locomotion: "Variable-Gait Hexapod",
+            payload: "40lbs Water/Med-kit"
+          }
+        },
+        {
+          status: "Veto",
+          reason: "Hydrodynamic Velocity exceeding 5m/s in Urban Grid. Standard SAR boats will snag on debris.",
+          recommendation: "Urban-Skimmer Fan-Bot",
+          specs: {
+            chassis: "Low-Draft Carbon Fiber",
+            locomotion: "Dual-Fan Propelled",
+            payload: "Emergency Beacon Array"
+          }
+        },
+        {
+          status: "Veto",
+          reason: "Total Soil Liquefaction in Appalachian Terrain. Tracked robots (RBT-Bravo) are too heavy.",
+          recommendation: "Aero-Lift Cargo Drone",
+          specs: {
+            chassis: "Titanium Alloy Exoskeleton",
+            locomotion: "Octo-Rotor VTOL",
+            payload: "Heavy-Duty Battery Cells"
+          }
         }
-      });
+      ];
+      
+      const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+      setGapAnalysis(randomScenario);
       setIsAnalyzing(false);
     }, 2000);
   };
@@ -143,10 +168,10 @@ export default function LeftPanel({
       </div>
 
       <div className="section-label">Generative Genesis (Nano)</div>
-      <AegisHardwareArchitect />
+      <AegisHardwareArchitect gapAnalysis={gapAnalysis} />
 
       <div className="section-label">Veo Simulation (WOW)</div>
-      <AegisVeoSimulation />
+      <AegisVeoSimulation gapAnalysis={gapAnalysis} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Play, Loader2, Download, AlertTriangle, Video } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-export default function AegisVeoSimulation() {
+export default function AegisVeoSimulation({ gapAnalysis }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [error, setError] = useState(null);
@@ -23,7 +23,10 @@ export default function AegisVeoSimulation() {
       const apiKey = import.meta.env.VITE_GOOGLE_GENAI_API_KEY;
       const ai = new GoogleGenAI({ apiKey });
 
-      const prompt = "A 5-second cinematic deployment simulation of the 'Mud-Runner' hexapod robot navigating through rushing brown floodwater and urban debris. The robot uses its wide-traction legs to stabilize itself and reach a civilian stranded on a car roof. High-fidelity disaster simulation style.";
+      const robotName = gapAnalysis?.recommendation || "'Mud-Runner' hexapod";
+      const terrain = gapAnalysis ? "through deep mud and urban debris" : "through rushing brown floodwater and urban debris";
+      
+      const prompt = `A 5-second cinematic deployment simulation of the ${robotName} robot navigating ${terrain}. The robot stabilizes itself using advanced sensors and reaches a rescue target. High-fidelity disaster simulation style.`;
 
       let operation = await ai.models.generateVideos({
         model: 'veo-3.1-fast-generate-preview',

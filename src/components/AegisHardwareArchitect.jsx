@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Bot, Camera, Download, Loader2, Sparkles } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-export default function AegisHardwareArchitect() {
+export default function AegisHardwareArchitect({ gapAnalysis }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState(null);
@@ -21,7 +21,10 @@ export default function AegisHardwareArchitect() {
         apiKey: import.meta.env.VITE_GOOGLE_GENAI_API_KEY
       });
 
-      const prompt = "A hyper-realistic hero image of a specialized disaster rescue robot called the 'Mud-Runner'. It is a hexapod with wide-traction gimbals, a sealed IP68 elevated chassis, and a heavy-duty payload module. It is navigating deep, thick brown mud and urban debris during a hurricane rescue mission. Dramatic lighting, 8k resolution, cinematic style.";
+      const robotName = gapAnalysis?.recommendation || "'Mud-Runner' Hexapod";
+      const robotSpecs = gapAnalysis ? `with ${gapAnalysis.specs.chassis} chassis and ${gapAnalysis.specs.locomotion} locomotion` : "with wide-traction gimbals and a sealed IP68 elevated chassis";
+      
+      const prompt = `A hyper-realistic hero image of a specialized disaster rescue robot called the ${robotName}. It is designed ${robotSpecs}. It is navigating deep, thick brown mud and urban debris during a hurricane rescue mission. Dramatic lighting, 8k resolution, cinematic style.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.1-flash-image-preview",
